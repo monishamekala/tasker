@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <nlohmann/json.hpp>
+#include "json.hpp"
 #include "or_set.h"
 #include "lww_register.h"
 
