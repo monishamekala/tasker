@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  cassandra:
+    image: cassandra:4
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+
+  rocketmq-namesrv:
+    image: apache/rocketmq:5.1.0
+    container_name: rmq-namesrv
+    command: sh mqnamesrv
+    ports:
+      - "9876:9876"
+
+  rocketmq-broker:
+    image: apache/rocketmq:5.1.0
+    container_name: rmq-broker
+    command: sh mqbroker -n rocketmq-namesrv:9876 -c /opt/rocketmq/conf/broker.conf
+    ports:
+      - "10911:10911"
+    depends_on:
+      - rocketmq-namesrv
+    volumes:
+      - ./queue/rocketmq_config/broker.conf:/opt/rocketmq/conf/broker.conf
+
+volumes:
+  mongo-data:
+  cassandra-data:

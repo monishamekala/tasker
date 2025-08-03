@@ -1,0 +1,47 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y cmake g++ libssl-dev
+
+    - name: Build backend
+      run: |
+        mkdir -p backend/build
+        cd backend/build
+        cmake ..
+        make
+
+    - name: Run Unit Tests (Placeholder)
+      run: |
+        echo "TODO: Add unit tests"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Kubeconfig
+      run: |
+        echo "${{ secrets.KUBECONFIG }}" > kubeconfig
+        export KUBECONFIG=$PWD/kubeconfig
+
+    - name: Deploy with Helm
+      run: |
+        helm upgrade --install task-manager ./helm/charts --values ./helm/charts/values.yaml
