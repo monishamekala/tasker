@@ -25,6 +25,36 @@ void connect_mongo() {
     std::cout << "[DB] MongoDB stubbed for now\n";
 }
 
+
+void app::register_crdt_routes() {
+    CROW_ROUTE(app, "/merge/crdt").methods("POST"_method)
+    ([](const crow::request& req) {
+        auto body = crow::json::load(req.body);
+        if (!body) return crow::response(400, "Invalid JSON");
+
+        const auto& changes = body["changes"];
+
+        for (const auto& change : changes) {
+            std::string taskId = change["task_id"].s();
+            std::string type = change["type"].s();
+            std::string field = change["field"].s();
+            uint64_t timestamp = change["timestamp"].i();
+
+            if (type == "OR-Set") {
+                std::vector<std::string> values;
+                for (const auto& v : change["value"]) {
+                    values.push_back(v.s());
+                }
+                mergeOrSet(taskId, field, values, timestamp);
+            }
+            // Add more types like LWW here
+        }
+
+        return crow::response(200, "Merge successful");
+    });
+}
+
+
 void start_server(int port) {
     Server svr;
 
