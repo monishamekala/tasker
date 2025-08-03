@@ -1,0 +1,21 @@
+{
+    "users": {
+      "_id": "string",
+      "name": "string",
+      "role": "string"
+    },
+    "tasks": {
+      "_id": "string",
+      "title": "string",
+      "status": "string",
+      "assignee": "string",
+      "team": "string",
+      "updated_at": "datetime"
+    },
+    "crdts": {
+      "_id": "string",
+      "or_set": ["string"],
+      "last_updated": "datetime"
+    }
+  }
+  

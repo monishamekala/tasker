@@ -73,21 +73,20 @@ docker-compose up -d
 
 # Deploy with Helm (after configuring values)
 helm install task-manager ./helm/charts
-
-
->## High-Level Backend Architecture 
+```
+## High-Level Backend Architecture 
                    ┌────────────────────────────────────────────┐
                    │             Client (Electron / React)      │
                    └────────────────────────────────────────────┘
-                                   │     ▲
-                            REST / WebSocket
-                                   ▼     │
+                                   │        ▲
+                                REST / WebSocket
+                                   ▼        │
                   ┌────────────────────────────────────────────┐
-                  │              C++ Backend API Layer          │
-                  │       (Business Logic / REST / WebSocket)   │
+                  │              C++ Backend API Layer         │
+                  │       (Business Logic / REST / WebSocket)  │
                   └────────────────────────────────────────────┘
-                            │         │              │
-                            ▼         ▼              ▼
+                        │               │                 │
+                        ▼               ▼                 ▼
          ┌────────────────────┐   ┌────────────┐   ┌────────────────────┐
          │   MongoDB          │   │ Cassandra  │   │   RocketMQ Broker  │
          │   - Users          │   │ - Events   │   │   - Events Queue   │
@@ -97,14 +96,14 @@ helm install task-manager ./helm/charts
                      ▲                                ▲
                      │                                │
           ┌────────────────────┐           ┌────────────────────┐
-          │ CRDT Merge Engine  │◄──Offline─┤ Event Consumers     │
-          │ - OR-Set / LWW     │           │ - SLA Checkers      │
-          │ - Reconciliation   │           │ - Status Updaters   │
+          │ CRDT Merge Engine  │◄──Offline─┤ Event Consumers    │
+          │ - OR-Set / LWW     │           │ - SLA Checkers     │
+          │ - Reconciliation   │           │ - Status Updaters  │
           └────────────────────┘           └────────────────────┘
 
                                    │
                           ┌────────────────┐
                           │  Prometheus +  │
                           │    Grafana     │
-                          │  (Observability│
+                          │ (Observability)│
                           └────────────────┘
