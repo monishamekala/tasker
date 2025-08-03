@@ -1,0 +1,20 @@
+groups:
+  - name: backend-alerts
+    rules:
+      - alert: HighLatency
+        expr: http_request_duration_seconds_avg > 0.2
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High average response latency"
+          description: "Task backend is responding slowly (>200ms)"
+
+      - alert: BackendDown
+        expr: up{job="task-backend"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backend is down"
+          description: "The task-backend service is not responding"
