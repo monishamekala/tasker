@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rocketmq-namesrv
+  labels:
+    app: rocketmq
+spec:
+  containers:
+  - name: namesrv
+    image: apache/rocketmq:5.1.0
+    command: ["sh", "mqnamesrv"]
+    ports:
+    - containerPort: 9876
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rocketmq-broker
+  labels:
+    app: rocketmq
+spec:
+  containers:
+  - name: broker
+    image: apache/rocketmq:5.1.0
+    command: ["sh", "-c", "mqbroker -n rocketmq-namesrv:9876 -c /opt/rocketmq/conf/broker.conf"]
+    ports:
+    - containerPort: 10911
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocketmq
+spec:
+  selector:
+    app: rocketmq
+  ports:
+  - port: 9876
+    name: namesrv
+  - port: 10911
+    name: broker
