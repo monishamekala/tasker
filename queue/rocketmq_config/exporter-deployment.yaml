@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rocketmq-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rocketmq-exporter
+  template:
+    metadata:
+      labels:
+        app: rocketmq-exporter
+    spec:
+      containers:
+        - name: exporter
+          image: styletang/rocketmq-exporter
+          ports:
+            - containerPort: 5557
+          env:
+            - name: NAMESRV_ADDR
+              value: "rocketmq-namesrv:9876"

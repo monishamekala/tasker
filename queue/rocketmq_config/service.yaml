@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocketmq-exporter
+spec:
+  selector:
+    app: rocketmq-exporter
+  ports:
+    - name: metrics
+      port: 5557
+      targetPort: 5557

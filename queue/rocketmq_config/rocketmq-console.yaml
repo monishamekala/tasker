@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rocketmq-console
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rocketmq-console
+  template:
+    metadata:
+      labels:
+        app: rocketmq-console
+    spec:
+      containers:
+      - name: console
+        image: apacherocketmq/rocketmq-console
+        ports:
+        - containerPort: 8080
+        env:
+        - name: JAVA_OPTS
+          value: "-Drocketmq.namesrv.addr=rocketmq-namesrv:9876"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocketmq-console
+spec:
+  selector:
+    app: rocketmq-console
+  ports:
+  - port: 8080
+    targetPort: 8080
